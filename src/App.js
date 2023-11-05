@@ -18,6 +18,28 @@ class App extends Component {
     };
   }
 
+  calculateFaceLocation = (data) => {
+    const clarifiFace =
+      data.outputs[0].data.regions[0].region_info.bounding_box;
+
+    const image = document.getElementById("inputImage");
+    const width = Number(image.width);
+    const height = Number(image.height);
+
+    return {
+      leftCol: clarifiFace.left_col * width,
+      topRow: clarifiFace.top_row * height,
+      rightCol: width - clarifiFace.right_col * width,
+      bottomRow: height - clarifiFace.bottom_row * height,
+    };
+  };
+
+  displayFaceBox = (box) => {
+    this.setState({ box: box }, () => {
+      console.log(this.state.box);
+    });
+  };
+
   onInputChange = (event) => {
     const newInputVal = event.target.value;
     this.setState({ input: newInputVal });
@@ -66,7 +88,9 @@ class App extends Component {
         requestOptions
       )
         .then((response) => response.json())
-        .then((result) => console.log(result))
+        .then((result) =>
+          this.displayFaceBox(this.calculateFaceLocation(result))
+        )
         .catch((error) => console.log("error", error));
     });
   };
@@ -82,7 +106,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onSubmit}
         />
-        <FaceRecognition imageURL={this.state.imageURL} />
+        <FaceRecognition box={this.state.box} imageURL={this.state.imageURL} />
       </div>
     );
   }
