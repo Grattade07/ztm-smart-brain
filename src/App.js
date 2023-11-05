@@ -5,6 +5,7 @@ import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
+import Signin from "./components/Signin/Signin";
 import ParticlesBg from "particles-bg";
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
       input: "",
       imageURL: "",
       box: {},
+      route: "signin",
     };
   }
 
@@ -95,18 +97,31 @@ class App extends Component {
     });
   };
 
+  onRouteChange = (route) => {
+    this.setState({ route: route });
+  };
+
   render() {
     return (
       <div className="App">
         <ParticlesBg type="cobweb" bg={true} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm
-          onInputChange={this.onInputChange}
-          onButtonSubmit={this.onSubmit}
-        />
-        <FaceRecognition box={this.state.box} imageURL={this.state.imageURL} />
+        <Navigation onRouteChange={this.onRouteChange} />
+        {this.state.route === "signin" ? (
+          <Signin onRouteChange={this.onRouteChange} />
+        ) : (
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onButtonSubmit={this.onSubmit}
+            />
+            <FaceRecognition
+              box={this.state.box}
+              imageURL={this.state.imageURL}
+            />
+          </div>
+        )}
       </div>
     );
   }
